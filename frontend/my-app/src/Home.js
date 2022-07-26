@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
 import Peer from 'simple-peer';
 const Home = () => {
-    const socket = io('https://zoomclone-mahesh.herokuapp.com/')
+    const socket = io('https://mahesh-zoomclon.herokuapp.com/')
   const [code, setCode] = useState()
   const [copys, setCopys] = useState(false)
   const [val, setVal] = useState('')

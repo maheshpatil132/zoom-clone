@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Peer, { DataConnection } from 'peerjs'
 
 const Room = () => {
-    const socket = io('https://zoomclone-mahesh.herokuapp.com/')
+    const socket = io('https://mahesh-zoomclon.herokuapp.com/')
     const { room } = useParams()
     const { name } = useParams()
     const [id, setId] = useState('')
