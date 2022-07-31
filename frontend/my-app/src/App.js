@@ -4,9 +4,8 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
 } from "react-router-dom";
-import Room from "./Room";
+import Meet from "./Meet";
 
 
 function App() {
@@ -17,7 +16,7 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element={<Home/>}></Route>
-        <Route path='/:name/:room' element={<Room/>}></Route>
+        <Route path='/:name/:room' element={<Meet/>}></Route>
       </Routes>
      
     </div>
