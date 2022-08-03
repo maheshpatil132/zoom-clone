@@ -12,15 +12,14 @@ const Home = () => {
   const [val, setVal] = useState('')
   const [name, setName] = useState('')
   const navigate = useNavigate()
+
   const call = () => {
     setCopys(false)
-    console.log(copys);
-    socket.emit("me", socket.id)
-    socket.on('getid', (arg) => {
+    socket.emit('me', socket.id)
+    socket.on('getid',(arg) => {
       setCode(arg)
     })
   }
-
   const copy = (e) => {
     navigator.clipboard.writeText(code)
     setCopys(!copys)
@@ -45,9 +44,8 @@ const Home = () => {
       {/* host meeting */}
       <div className='flex flex-col container mx-auto  md:flex-row'>
         <div className='mx-auto p-4 w-full  md:w-1/3'>
-          <h2 className=' text-2xl text-center my-6 text-green-600 '>Host The Meeting</h2>
+          <h2 className=' text-2xl text-center my-6 text-green-600 '>Create The Meeting</h2>
           <form onSubmit={(e) => { e.preventDefault() }} className=' flex flex-col mx-auto space-y-6 '>
-            <input type="text" className='border p-2' placeholder='Enter your Name' />
             {
               code &&
               <div type="text" className='border p-2 flex flex-row justify-between' >
@@ -65,20 +63,16 @@ const Home = () => {
 
               </div>
             }
-            <button className=' bg-blue-500 text-white py-2 rounded-lg ' onClick={call}>create Meeting</button>
+            <button className=' bg-blue-500 text-white py-2 rounded-lg 'onClick={call}>create Meeting</button>
           </form>
-
-          <h2 className='my-4'>chat message</h2>
-          <input className='border p-2' type="text" placeholder='mesage' />
-          <button className='border mx-6 px-4 py-1'>send</button>
         </div>
         {/* join meeting */}
         <div className='mx-auto p-4 w-full  md:w-1/3'>
           <h2 className='text-2xl text-center my-6 text-green-600 '>join The Meeting</h2>
-          <form action="" className='flex flex-col mx-auto space-y-6 '>
-            <input type="text" value={name} onChange={namehandle} className='border p-2' placeholder='Enter your Name' />
-            <input value={val} onChange={change} type="text" className='border p-2' placeholder='Enter your code' />
-            <button  type='button' onClick={join} className=' bg-blue-500 text-white py-2 rounded-lg'>join Meeting</button>
+          <form onSubmit={join} className='flex flex-col mx-auto space-y-6 '>
+            <input required={true} type="text" value={name} onChange={namehandle} className='border p-2' placeholder='Enter your Name' />
+            <input required value={val} onChange={change} type="text" className='border p-2' placeholder='Enter your code' />
+            <button  type='submit'  className=' bg-blue-500 text-white py-2 rounded-lg'>join Meeting</button>
           </form>
 
         </div>

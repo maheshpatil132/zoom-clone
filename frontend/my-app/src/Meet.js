@@ -25,8 +25,9 @@ const Meet = () => {
         const div = document.createElement('div')
         const h1 = document.createElement('h1')
         h1.classList.add('text-3xl','text-center')
+        video.classList.add('h-80')
         h1.textContent = name
-        div.classList.add('border','rounded' ,'p-1','bg-slate-400')
+        div.classList.add('border','rounded' ,'p-1','bg-slate-400','h-80','overflow-hidden')
         div.appendChild(h1)
         div.appendChild(video)
         mydiv.current.appendChild(div)
@@ -41,13 +42,13 @@ const Meet = () => {
             socket.emit('join',room,id,name)
          }) 
          
-         navigator.mediaDevices.getUserMedia({video:true}).then((strm)=>{
+         navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
             myvideo.current.srcObject = strm
         })
         
        
             peer.on('call',(call)=>{
-                navigator.mediaDevices.getUserMedia({video:true}).then((strm)=>{
+                navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
                     call.answer(strm)
                     const video = document.createElement('video')
                     call.on('stream',(remote)=>{
@@ -93,7 +94,7 @@ const Meet = () => {
     })
 
     const call = (id,username)=>{
-        navigator.mediaDevices.getUserMedia({video:true}).then((strm)=>{
+        navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
             const call = peer.call(id,strm)
             const video = document.createElement('video')
             call.on('stream',(remote)=>{
@@ -124,14 +125,14 @@ const Meet = () => {
     <div>
 
 <div className='container p-4 mx-auto'>
-            <h2 className='text-center text-green-600 text-3xl capitalize'>chat message</h2>
-            <div className=" p-2 my-4 flex flex-wrap  justify-center gap-8 mx-auto" ref={mydiv} >
-                <div className="left border rounded p-1 bg-slate-400  " >
-                    <video autoPlay={true} className=' w-full' ref={myvideo}></video>
+            <h2 className='text-center text-green-600 text-3xl capitalize'>Voice chat</h2>
+            <div className=" p-2 my-4 flex flex-wrap justify-center g-4 mx-auto" ref={mydiv} >
+                <div className="left border rounded p-1 bg-slate-400 h-80  overflow-hidden " >
+                    <h1 className='text-3xl text-center'>you</h1>
+                    <video autoPlay={true} className='h-80 ' ref={myvideo}></video>
                 </div>
             </div>
         </div>
-
     </div>
   )
 }

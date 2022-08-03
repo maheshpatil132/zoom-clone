@@ -23,6 +23,7 @@ const PORT = process.env.PORT || 5000
   io.on('connection', (socket) => {
 
     socket.on('me',(data)=>{
+        console.log("hi");
         socket.emit('getid',data)
     })
   
