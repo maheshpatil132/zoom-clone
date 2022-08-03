@@ -24,10 +24,10 @@ const Meet = () => {
         video.srcObject = stream
         const div = document.createElement('div')
         const h1 = document.createElement('h1')
-        h1.classList.add('text-3xl','text-center')
-        video.classList.add('h-80')
+        h1.classList.add('text-3xl','text-center','absolute','capitalize')
+        video.classList.add('w-80')
         h1.textContent = name
-        div.classList.add('border','rounded' ,'p-1','bg-slate-400','h-80','overflow-hidden')
+        div.classList.add('border','rounded' ,'p-1','bg-slate-400','overflow-hidden','relative')
         div.appendChild(h1)
         div.appendChild(video)
         mydiv.current.appendChild(div)
@@ -51,14 +51,13 @@ const Meet = () => {
                 navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
                     call.answer(strm)
                     const video = document.createElement('video')
-                    call.on('stream',(remote)=>{
-                        append(video,remote,othername)
-                        video.play()
+                    call.on('stream',async(remote)=>{
+                       append(video,remote,othername)
+                       await video.play()
                     })
                     call.on('close',()=>{
                         video.remove()
                         RemoveUnusedDivs()
-                        console.log("maheshw close video");
                     })  
                     answerList.push({call})
                 })
@@ -67,7 +66,7 @@ const Meet = () => {
     }, [])
        
     socket.on('user-connect',(id,size,username,parties)=>{  
-        console.log(`new user : ${id}`);
+        // console.log(`new user : ${id}`);
         call(id,username)
         socket.emit('tellname',name,id)
     })
@@ -97,14 +96,13 @@ const Meet = () => {
         navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
             const call = peer.call(id,strm)
             const video = document.createElement('video')
-            call.on('stream',(remote)=>{
+            call.on('stream',async(remote)=>{
               append(video,remote,username)
-              video.play()
+             await video.play()
             })
             call.on('close',()=>{
                     video.remove()
                     RemoveUnusedDivs()
-                    console.log("mahesh close video");
                 })  
             callList.push({id,call})
         })
@@ -126,10 +124,10 @@ const Meet = () => {
 
 <div className='container p-4 mx-auto'>
             <h2 className='text-center text-green-600 text-3xl capitalize'>Voice chat</h2>
-            <div className=" p-2 my-4 flex flex-wrap justify-center g-4 mx-auto" ref={mydiv} >
-                <div className="left border rounded p-1 bg-slate-400 h-80  overflow-hidden " >
-                    <h1 className='text-3xl text-center'>you</h1>
-                    <video autoPlay={true} className='h-80 ' ref={myvideo}></video>
+            <div className=" p-2 my-4 flex flex-wrap justify-center gap-4 mx-auto" ref={mydiv} >
+                <div className="left border rounded p-1 bg-slate-400 h-fit relative overflow-hidden " >
+                    <h1 className='text-3xl text-center absolute capitalize'>You</h1>
+                    <video autoPlay={true} className='w-80' ref={myvideo}></video>
                 </div>
             </div>
         </div>
