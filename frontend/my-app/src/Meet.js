@@ -42,7 +42,7 @@ const Meet = () => {
             socket.emit('join',room,id,name)
          }) 
          
-         navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
+         navigator.mediaDevices.getUserMedia({video:true}).then((strm)=>{
             myvideo.current.srcObject = strm
         })
         
