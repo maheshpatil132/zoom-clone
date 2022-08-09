@@ -40,32 +40,12 @@ const Meet = () => {
 
     }
 
-    navigator.mediaDevices.getUserMedia({ video: true,audio:true }).then((strm) => {
+    
+    navigator.mediaDevices.getUserMedia({ video: true , audio:true}).then((strm) => {
         myvideoStrm = strm;
         if(myvideo.current){
             myvideo.current.srcObject = strm
         }
-
-        socket.on('user-connect', (id, size, username, parties) => {
-            call(id,username,strm)
-            socket.emit('tellname', name, id)
-        })
-    
-        socket.on('user-disconnected', (id) => {
-            const index = callList.findIndex((peer) => peer.id = id)
-            const index2 = answerList.findIndex((peer) => peer.peer = id)
-            console.log(index2);
-            if (index > -1) {
-                console.log(callList[index].call);
-                callList[index].call.close()
-                callList.splice(index, 1);
-            }
-            if (index2 > -1) {
-                answerList[index2].call.close()
-                answerList.splice(index2, 1);
-            }
-        })
-
     })
 
 
@@ -93,32 +73,29 @@ const Meet = () => {
             })
         })
 
-    myvideo.current.muted =true
-
-
     }, [])
 
-    // socket.on('user-connect', (id, size, username, parties) => {
-    //     // console.log(`new user : ${id}`);
-    //     call(id,username)
-    //     socket.emit('tellname', name, id)
-    // })
+    socket.on('user-connect', (id, size, username, parties) => {
+        // console.log(`new user : ${id}`);
+        call(id,username,myvideoStrm)
+        socket.emit('tellname', name, id)
+    })
 
 
-    // socket.on('user-disconnected', (id) => {
-    //     const index = callList.findIndex((peer) => peer.id = id)
-    //     const index2 = answerList.findIndex((peer) => peer.peer = id)
-    //     console.log(index2);
-    //     if (index > -1) {
-    //         console.log(callList[index].call);
-    //         callList[index].call.close()
-    //         callList.splice(index, 1);
-    //     }
-    //     if (index2 > -1) {
-    //         answerList[index2].call.close()
-    //         answerList.splice(index2, 1);
-    //     }
-    // })
+    socket.on('user-disconnected', (id) => {
+        const index = callList.findIndex((peer) => peer.id = id)
+        const index2 = answerList.findIndex((peer) => peer.peer = id)
+        console.log(index2);
+        if (index > -1) {
+            console.log(callList[index].call);
+            callList[index].call.close()
+            callList.splice(index, 1);
+        }
+        if (index2 > -1) {
+            answerList[index2].call.close()
+            answerList.splice(index2, 1);
+        }
+    })
 
     socket.on('addname', (name, id) => {
         othername = name
@@ -150,7 +127,7 @@ const Meet = () => {
     // video off/on
     
     const VideoControl = ()=>{
-        console.log("stop");
+       console.log(typeof(myvideoStrm))
         const enable = myvideoStrm.getVideoTracks()[0].enabled;
         if (enable) { // If Video on
             myvideoStrm.getVideoTracks()[0].enabled = false; // Turn off
@@ -168,7 +145,15 @@ const Meet = () => {
             myvideoStrm.getVideoTracks()[0].enabled = true; // Turn On 
             setVid(true)
     }
-
+   
+    const muteUnmute = () => { // Mute Audio
+        const enabled = myvideoStrm.getAudioTracks()[0].enabled; // Audio tracks are those tracks whose kind property is audio. Chck if array in empty or not
+        if (enabled) { // If not Mute
+            myvideoStrm.getAudioTracks()[0].enabled = false; // Mute
+        } else {
+            myvideoStrm.getAudioTracks()[0].enabled = true; // UnMute
+        }
+    };
 
 
 
@@ -179,7 +164,7 @@ const Meet = () => {
                 <div className=" p-2 my-4 flex flex-wrap justify-center gap-4 mx-auto max-h-screen " ref={mydiv} >
                     <div className="left border rounded p-1 bg-slate-400 h-fit relative overflow-hidden " >
                         <h1 className='text-3xl text-center absolute capitalize'>You</h1>
-                        <video autoPlay={true} className='w-80' ref={myvideo}></video>
+                        <video muted={true} autoPlay={true} className='w-80' ref={myvideo}></video>
                     </div>
                 </div>
 
@@ -205,7 +190,7 @@ const Meet = () => {
                                 <svg className=" h-6 w-6 cursor-pointer  text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />  <line x1="1" y1="1" x2="23" y2="23" /></svg>
                             </div>
                     }
-                    <div className=' flex justify-center p-3 rounded-full items-center bg-red-600'>
+                    <div onClick={muteUnmute} className=' flex justify-center p-3 rounded-full items-center bg-red-600'>
                         <svg className="h-7 w-7 cursor-pointer text-gray " width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
                     </div>
                 </div>
