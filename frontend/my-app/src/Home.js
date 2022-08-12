@@ -5,8 +5,8 @@ import io from 'socket.io-client'
 import Peer from 'simple-peer';
 const Home = () => {
     // const socket = io('https://mahesh-zoomclon.herokuapp.com/')  //useless
-    // const socket = io('https://zoomclone-mahesh.herokuapp.com/')
-    const socket = io('http://localhost:5000')
+    const socket = io('https://zoomclone-mahesh.herokuapp.com/')
+    // const socket = io('http://localhost:5000')
 
        
 
