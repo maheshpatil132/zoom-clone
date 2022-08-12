@@ -29,15 +29,18 @@ const PORT = process.env.PORT || 5000
   
    socket.once('join',(room,id,name)=>{
     socket.join(room)
+
     if(!parties.includes(id)){
       parties.push({id,name})
     }
-    const size = io.sockets.adapter.rooms.get(room).size
 
-    socket.broadcast.to(room).emit('user-connect',id,size,name ,parties)
+    const size = io.sockets.adapter.rooms.get(room).size
+    console.log(size)
+
+    socket.broadcast.to(room).emit('user-connect',id,size,name)
 
     socket.on('tellname',(name,id)=>{
-      socket.to(room).emit('addname',name,id)
+      socket.broadcast.to(room).emit('addname',name,id)
     })
 
     socket.on('disconnect',()=>{
