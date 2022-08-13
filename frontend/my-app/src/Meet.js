@@ -15,15 +15,14 @@ const Meet = () => {
     const [ids, setIds] = useState('')
     const [audio, setAudio] = useState(true)
     const [vid, setVid] = useState(true)
+    const [media, setMedia] = useState(null)
     const mydiv = useRef()
     const myvideo = useRef()
     const peer = new Peer()
 
 
     let othername = ' '
-    let myvideoStrm;
-    let myvideoStrms ;
-
+    var myvideoStrm;
     const callList = []
     const answerList = []
 
@@ -45,22 +44,8 @@ const Meet = () => {
 
     }
 
-
-    navigator.mediaDevices.getUserMedia({ video:{height:240}, audio: true }).then((strm) => {
-        myvideoStrm = strm
-        if (myvideo.current) {
-            myvideo.current.srcObject = strm
-        }
-
-        socket.on('user-connect', (id,size,username) => {
-            // console.log(`new user : ${id}`);
-            console.log("new user")
-            call(id, username,strm)
-            socket.emit('tellname', name, id)
-        })
-
-    })
-
+    
+    
 
     useEffect(() => {
 
@@ -69,12 +54,18 @@ const Meet = () => {
             socket.emit('join', room, id, name)
         })
 
-
+        navigator.mediaDevices.getUserMedia({ video:{height:240},audio:true }).then((strm) => {
+            myvideoStrm = strm
+            setMedia(strm)
+            if (myvideo.current) {
+                myvideo.current.srcObject =strm
+            }
+        })
+        
+    
         peer.on('call', (call) => {
             navigator.mediaDevices.getUserMedia({video:true,audio:true}).then((strm)=>{
-                console.log(myvideoStrm.getVideoTracks()[0].enabled);
             call.answer(myvideoStrm)
-            // myvideoStrm.getVideoTracks()[0].enabled = false
             const video = document.createElement('video')
             call.on('stream', (remote) => {
                 console.log(remote.getVideoTracks()[0].enabled)
@@ -87,12 +78,23 @@ const Meet = () => {
             answerList.push({ call })
         })
     })
-
     }, [])
 
 
+     
+    // socket.on('user-connect', (id,size,username) => {
+    //     // console.log(`new user : ${id}`);
+    //     console.log("new user")
+    //     call(id, username,myvideoStrm)
+    //     socket.emit('tellname', name, id)
+    // })
+    socket.on('user-connect', (id,size,username) => {
+        // console.log(`new user : ${id}`);
+        console.log("new user")
+        call(id, username,myvideoStrm)
+        socket.emit('tellname', name, id)
 
-    
+    })
 
     socket.on('user-disconnected', (id) => {
         const index = callList.findIndex((peer) => peer.id = id)
@@ -114,7 +116,7 @@ const Meet = () => {
     })
    
 
-    const call = (id, username , myvideoStrm) => {
+    const call = (id, username , myvideoStrm ) => {
         const call = peer.call(id,myvideoStrm)
         const video = document.createElement('video')
         call.on('stream', (remote) => {
@@ -127,6 +129,8 @@ const Meet = () => {
         callList.push({ id, call })
         
     }
+
+    
     const RemoveUnusedDivs = () => {
         let alldivs = mydiv.current.getElementsByTagName("div");
         for (var i = 0; i < alldivs.length; i++) {
@@ -141,43 +145,35 @@ const Meet = () => {
     // video off/on
 
     const VideoControl = () => {
-    
-        myvideoStrms = "mahesh"
-        console.log(myvideoStrm);
-        const enable = myvideoStrm.getVideoTracks()[0].enabled;
+   
+        const enable = media.getVideoTracks()[0].enabled;
         if (enable) { // If Video on
-            myvideoStrm.getVideoTracks()[0].enabled = false; // Turn off
+            media.getVideoTracks()[0].enabled = false; // Turn off
             document.getElementById("video").style.color = "red"; // Change Color
         } else {
-            document.getElementById("video").style.color = "white"; // Change Color
-            myvideoStrm.getVideoTracks()[0].enabled = true; // Turn On 
+            document.getElementById("video").style.color = "black"; // Change Color
+            media.getVideoTracks()[0].enabled = true; // Turn On 
         }
         // myvideoStrm.getVideoTracks()[0].enabled = !(myvideoStrm.getVideoTracks()[0].enabled);
         
     }
 
-    
-
-    const startVideo = () => {
-        console.log("start");
-    }
 
     const muteUnmute = () => { // Mute Audio
-        const enabled = myvideoStrm.getAudioTracks()[0].enabled; // Audio tracks are those tracks whose kind property is audio. Chck if array in empty or not
+        console.log(media);
+        const enabled = media.getAudioTracks()[0].enabled; // Audio tracks are those tracks whose kind property is audio. Chck if array in empty or not
         if (enabled) { // If not Mute
-            myvideoStrm.getAudioTracks()[0].enabled = false; // Mute
+            media.getAudioTracks()[0].enabled = false; // Mute
             document.getElementById("audio").style.color = "red";
         } else {
-            myvideoStrm.getAudioTracks()[0].enabled = true; // UnMute
-            document.getElementById("audio").style.color = "white";
+            media.getAudioTracks()[0].enabled = true; // UnMute
+            document.getElementById("audio").style.color = "black";
         }
-        console.log("object");
     };
-
 
     return (
         <div>
-            <div className=' flex container p-4 mx-auto flex-col h-screen  bg-slate-300 '>
+            <div className=' flex container p-8 mx-auto flex-col h-screen  bg-slate-300 '>
                 <h2 className='text-center text-green-600 text-3xl capitalize'>Voice chat</h2>
 
                 <div className=" p-2 box-container my-4 flex  flex-1 flex-wrap justify-center gap-4 mx-auto overflow-scroll" ref={mydiv} >
@@ -202,10 +198,10 @@ const Meet = () => {
                     {
                         vid ?
                             <div  onClick={VideoControl} className='bg-slate-500 p-3 rounded-full'>
-                                <svg id='video' className="h-6 w-6   cursor-pointer text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <polygon points="23 7 16 12 23 17 23 7" />  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
+                                <svg id='video' className="h-6 w-6   cursor-pointer text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <polygon points="23 7 16 12 23 17 23 7" />  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
                             </div>
                             :
-                            <div onClick={startVideo} className=' bg-slate-500 p-3 rounded-full'>
+                            <div  className=' bg-slate-500 p-3 rounded-full'>
                                 <svg className=" h-6 w-6 cursor-pointer  text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">  <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />  <line x1="1" y1="1" x2="23" y2="23" /></svg>
                             </div>
                     }
