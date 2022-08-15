@@ -56,7 +56,7 @@ const Meet = () => {
             socket.emit('join', room, id, name)
         })
 
-        navigator.mediaDevices.getUserMedia({ video:{height:240,width:300},audio:true }).then((strm) => {
+        navigator.mediaDevices.getUserMedia({ video:{height:230,width:300},audio:true }).then((strm) => {
             myvideoStrm = strm
             setMedia(strm)
             if (myvideo.current) {
@@ -84,23 +84,26 @@ const Meet = () => {
     })
     }, [])
 
-
-     
-    // socket.on('user-connect', (id,size,username) => {
-    //     // console.log(`new user : ${id}`);
-    //     console.log("new user")
-    //     call(id, username,myvideoStrm)
-    //     socket.emit('tellname', name, id)
-    // })
     socket.on('user-connect', (id,size,username) => {
         // console.log(`new user : ${id}`);
-        console.log("new user")
+      
+        console.log("new user");
+        
+
+        const found = callList.some(el => el.id === id);
+
+        if(!found){
         call(id, username,myvideoStrm)
+           
+        }
+        console.log(callList.includes({id}));
+        // call(id, username,myvideoStrm)
         socket.emit('tellname', name, id)
 
     })
 
     socket.on('user-disconnected', (id) => {
+        console.log("disconnected");
         const index = callList.findIndex((peer) => peer.id = id)
         const index2 = answerList.findIndex((peer) => peer.peer = id)
         console.log(index2);
@@ -115,6 +118,8 @@ const Meet = () => {
         }
     })
 
+    
+
     socket.on('addname', (username, id) => {
         othername = username
     })
@@ -124,6 +129,7 @@ const Meet = () => {
         const call = peer.call(id,myvideoStrm)
         const video = document.createElement('video')
         call.on('stream', (remote) => {
+            console.log(callList.includes(id))
             append(video, remote, username)
         })
         call.on('close', () => {
@@ -177,13 +183,13 @@ const Meet = () => {
         }
     };
 
-
+  
     const leave = ()=>{
-       console.log("disconnect")
-    //    socket.disconnect()
-    //    callRef.current.close()
-    //    navigate('/')
-    //    console.log(ids)
+       socket.emit('user-left',ids,room)
+       media.getTracks().forEach(function(track) {
+        track.stop();
+      });
+      navigate('/')
     }
 
     return (

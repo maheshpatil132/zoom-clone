@@ -26,8 +26,12 @@ const PORT = process.env.PORT || 5000
         console.log("hi");
         socket.emit('getid',data)
     })
+
+    socket.on('user-left',(id,room)=>{
+      socket.to(room).emit("user-disconnected",id)
+     })
   
-   socket.once('join',(room,id,name)=>{
+   socket.on('join',(room,id,name)=>{
     socket.join(room)
 
     if(!parties.includes(id)){
@@ -51,8 +55,11 @@ const PORT = process.env.PORT || 5000
        
       socket.to(room).emit("user-disconnected",id)
      })
-     
-    
+
+     socket.emit("cut",id)
+     socket.on('user-left',(id)=>{
+      console.log(id)
+     })
    })
     
   });
