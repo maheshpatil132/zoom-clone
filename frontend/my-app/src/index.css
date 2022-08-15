@@ -10,3 +10,7 @@ body{
 .box-container::-webkit-scrollbar{
     width: 0 !important;
 }
+
+.videogrid{
+    grid-template-columns: repeat(auto-fit , minmax(0rem,30rem)) !important;
+}
