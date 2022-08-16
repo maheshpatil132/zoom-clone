@@ -42,7 +42,7 @@ const Meet = () => {
             video.play()
         })
         h1.textContent = name
-        div.classList.add('border', 'rounded', 'p-1', 'bg-slate-400', 'overflow-hidden', 'relative', 'h-fit')
+        div.classList.add('border', 'rounded', 'overflow-hidden', 'bg-slate-400', 'overflow-hidden', 'relative', 'h-fit')
         div.appendChild(h1)
         div.appendChild(video)
         mydiv.current.appendChild(div)
@@ -196,29 +196,29 @@ const Meet = () => {
     }
 
     return (
-        <div className='bg-slate-300'>
-            <div className='py-4 flex container mx-auto flex-col h-screen '>
+        <div className='bg-slate-200'>
+            <div className='py-8 pb-10 flex container mx-auto flex-col h-screen '>
                 <div ref={alertbox} className="p-4 hidden absolute w-full left-0 top-0 mb-4 text-sm text-green-700 bg-green-100 rounded dark:bg-green-200 dark:text-green-800" role="alert">
                     <span className="font-medium">Success alert!</span> Room Code is copied
                 </div>
                 <h2 className='text-center text-green-600 text-3xl capitalize'>video chat</h2>
 
                 <div className=" p-2 box-container flex-1 my-4 flex flex-wrap  justify-center gap-4 mx-auto overflow-scroll " ref={mydiv} >
-                    <div className="left border h-fit rounded p-1 bg-slate-400 relative" >
+                    <div className="left border h-fit rounded overflow-hidden bg-slate-400 relative" >
                         <h1 className='text-3xl text-center absolute capitalize'>You</h1>
                         <video muted={true} autoPlay={true} ref={myvideo}></video>
                     </div>
 
                 </div>
 
-                <div className="footer flex container  justify-center rounded mx-auto gap-6 bg-neutral-400 p-3 md:gap-8   ">
-                    <div onClick={muteUnmute} className='cursor-pointer bg-slate-500 flex justify-center rounded-full items-center p-4'>
+                <div className="footer flex container  justify-center rounded mx-auto gap-6 bg-gray-300 p-3 md:gap-8   ">
+                    <div onClick={muteUnmute} className='cursor-pointer bg-slate-400 flex justify-center rounded-full items-center p-4'>
                         <i id='audio' className="fa-solid fa-microphone-slash text-xl"></i>
                     </div>
-                    <div onClick={VideoControl} className=' cursor-pointer bg-slate-500 flex justify-center rounded-full items-center p-4'>
+                    <div onClick={VideoControl} className=' cursor-pointer bg-slate-400 flex justify-center rounded-full items-center p-4'>
                         <i id='video' className="fa-solid fa-video-slash text-xl"></i>
                     </div>
-                    <div onClick={invite} className='cursor-pointer bg-slate-500 flex justify-center rounded-full items-center p-4'>
+                    <div onClick={invite} className='cursor-pointer bg-slate-400 flex justify-center rounded-full items-center p-4'>
                         <i className="fa-solid fa-user-plus text-xl"></i>
                     </div>
                     <div onClick={leave} className='cursor-pointer flex justify-center rounded-full items-center p-4 bg-red-600'>
