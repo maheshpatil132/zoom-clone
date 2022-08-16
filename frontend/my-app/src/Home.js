@@ -2,13 +2,10 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
-import Peer from 'simple-peer';
 const Home = () => {
-    // const socket = io('https://mahesh-zoomclon.herokuapp.com/')  //useless
-    const socket = io('https://zoomclone-mahesh.herokuapp.com/')
-    // const socket = io('http://localhost:5000')
 
-       
+  const socket = io('https://zoomclone-mahesh.herokuapp.com/')
+  // const socket = io('http://localhost:5000')
 
   const [code, setCode] = useState()
   const [copys, setCopys] = useState(false)
@@ -16,34 +13,38 @@ const Home = () => {
   const [name, setName] = useState('')
   const navigate = useNavigate()
 
+  // create meeting code
   const call = () => {
     setCopys(false)
     socket.emit('me', socket.id)
-    socket.on('getid',(arg) => {
+    socket.on('getid', (arg) => {
       setCode(arg)
     })
   }
+
+  // onclick copy the meeting code
   const copy = (e) => {
     navigator.clipboard.writeText(code)
     setCopys(!copys)
   }
-  
-  const change = (e)=>{
+
+  const change = (e) => {
     setVal(e.target.value)
   }
 
-  const join=()=>{
+  // onclick navigate to the meeeting page
+  const join = () => {
     navigate(`/${name}/${val}`)
   }
-  
-  const namehandle = (e)=>{
+
+  // handle the onchange event
+  const namehandle = (e) => {
     setName(e.target.value)
   }
- 
-  
+
   return (
     <div>
-         <h1 className='text-center my-8 text-3xl'>Video chat App</h1>
+      <h1 className='text-center my-8 text-3xl'>Video chat App</h1>
       {/* host meeting */}
       <div className='flex flex-col container mx-auto  md:flex-row'>
         <div className='mx-auto p-4 w-full  md:w-1/3'>
@@ -52,7 +53,7 @@ const Home = () => {
             {
               code &&
               <div type="text" className='border p-2 flex flex-row justify-between' >
-                <p className=' w-11/12 overflow-hidden'>{code}</p> 
+                <p className=' w-11/12 overflow-hidden'>{code}</p>
                 {
                   !copys ?
                     <svg xmlns="http://www.w3.org/2000/svg" onClick={copy} className="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -66,7 +67,7 @@ const Home = () => {
 
               </div>
             }
-            <button className=' bg-blue-500 text-white py-2 rounded-lg 'onClick={call}>create Meeting</button>
+            <button className=' bg-blue-500 text-white py-2 rounded-lg ' onClick={call}>create Meeting</button>
           </form>
         </div>
         {/* join meeting */}
@@ -75,7 +76,7 @@ const Home = () => {
           <form onSubmit={join} className='flex flex-col mx-auto space-y-6 '>
             <input required={true} type="text" value={name} onChange={namehandle} className='border p-2' placeholder='Enter your Name' />
             <input required value={val} onChange={change} type="text" className='border p-2' placeholder='Enter your code' />
-            <button  type='submit'  className=' bg-blue-500 text-white py-2 rounded-lg'>join Meeting</button>
+            <button type='submit' className=' bg-blue-500 text-white py-2 rounded-lg'>join Meeting</button>
           </form>
 
         </div>
