@@ -27,10 +27,6 @@ io.on('connection', (socket) => {
     socket.emit('getid', data)
   })
 
-  // user leave the meeting
-  socket.on('user-left', (id, room) => {
-    socket.to(room).emit("user-disconnected", id)
-  })
 
   // on user join the meething room
   socket.on('join', (room, id, name) => {
@@ -59,9 +55,13 @@ io.on('connection', (socket) => {
       if (index > -1) { // only splice array when item is found
         parties.splice(index, 1); // 2nd parameter means remove one item only
       }
-      socket.to(room).emit("user-disconnected", id)
-    })
+      socket.broadcast.to(room).emit("user-disconnected", id)
+    }) 
+  })
 
+  // user leave the meeting
+  socket.on('user-left',(id, room) => {
+     socket.broadcast.to(room).emit('user-disconnected',id)
   })
 
 });

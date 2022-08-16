@@ -7,8 +7,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 
 const Meet = () => {
-    const socket = io('https://zoomclone-mahesh.herokuapp.com/')
-    // const socket = io('http://localhost:5000')
+    // const socket = io('https://zoomclone-mahesh.herokuapp.com/')
+    const socket = io('http://localhost:5000')
 
     const { name } = useParams()
     const { room } = useParams()
@@ -26,7 +26,7 @@ const Meet = () => {
     const peer = new Peer()  // peer js
     const navigate = useNavigate()
 
-    let othername = ' '
+    var othername;
     var myvideoStrm;
     const callList = []
     const answerList = []
@@ -70,27 +70,33 @@ const Meet = () => {
         })
 
         // answering the call
-        peer.on('call', (call) => {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((strm) => {
-                call.answer(myvideoStrm)
-                const video = document.createElement('video')
-                call.on('stream', (remote) => {
-                    console.log(remote.getVideoTracks()[0].enabled)
-                    append(video, remote, otherusername)
-                })
-                call.on('close', () => {
-                    video.remove()
-                    RemoveUnusedDivs()
-                })
-                callRef.current = call
-                answerList.push({ call })
-            })
-        })
+        
 
     }, [])
 
+
+    peer.on('call', (call,id) => {
+
+        socket.on('addname', (username, id) => {
+            call.answer(myvideoStrm)
+            const video = document.createElement('video')
+            call.on('stream', (remote) => {
+                console.log(remote.getVideoTracks()[0].enabled)
+                append(video, remote, username)
+            })
+            call.on('close', () => {
+                video.remove()
+                RemoveUnusedDivs()
+            })
+            callRef.current = call
+            answerList.push({ call })
+        })
+    
+    })
+
     socket.on('user-connect', (id, size, username) => {
         // console.log(`new user : ${id}`);
+        console.log("new user");
         const found = callList.some(el => el.id === id);
         // check the user is already in call or not 
         if (!found) { 
@@ -116,11 +122,7 @@ const Meet = () => {
         }
     })
 
-    socket.on('addname', (username, id) => {
-        othername = username
-        setOtheruserName(username)
-    })
-
+   
     // making a call on other join the room
     const call = (id, username, myvideoStrm) => {
         const call = peer.call(id, myvideoStrm)
@@ -174,6 +176,7 @@ const Meet = () => {
             document.getElementById("audio").style.color = "black";
         }
     };
+     
 
     // ending a call
     const leave = () => {
@@ -197,7 +200,7 @@ const Meet = () => {
 
     return (
         <div className='bg-slate-200'>
-            <div className='py-8 pb-10 flex container mx-auto flex-col h-screen '>
+            <div className='py-8 pb-9 flex container mx-auto flex-col h-screen '>
                 <div ref={alertbox} className="p-4 hidden absolute w-full left-0 top-0 mb-4 text-sm text-green-700 bg-green-100 rounded dark:bg-green-200 dark:text-green-800" role="alert">
                     <span className="font-medium">Success alert!</span> Room Code is copied
                 </div>
