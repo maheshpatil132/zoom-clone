@@ -26,7 +26,6 @@ const Meet = () => {
     const peer = new Peer()  // peer js
     const navigate = useNavigate()
 
-    var othername;
     var myvideoStrm;
     const callList = []
     const answerList = []
@@ -51,8 +50,6 @@ const Meet = () => {
     }
 
 
-
-
     useEffect(() => {
         // generate the user id and send it to other users
         peer.once('open', (id) => {
@@ -68,16 +65,11 @@ const Meet = () => {
                 myvideo.current.srcObject = strm
             }
         })
-
-        // answering the call
-        
-
     }, [])
 
-
+    // answering the call
     peer.on('call', (call,id) => {
-
-        socket.on('addname', (username, id) => {
+        socket.on('addname', (username, id) => { //get the otheruser name who are calling
             call.answer(myvideoStrm)
             const video = document.createElement('video')
             call.on('stream', (remote) => {
@@ -151,7 +143,6 @@ const Meet = () => {
 
 
     // video off/on
-
     const VideoControl = () => {
         const enable = media.getVideoTracks()[0].enabled;
         if (enable) { // If Video on
