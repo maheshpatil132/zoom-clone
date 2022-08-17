@@ -61,8 +61,9 @@ io.on('connection', (socket) => {
 
   // user leave the meeting
   socket.on('user-left',(id, room) => {
-    //  socket.broadcast.to(room).emit('user-disconnected',id)
-    socket.disconnect()
+     socket.leave(room)
+     socket.broadcast.to(room).emit('user-disconnected',id)
+    // socket.disconnect()
   })
 
 });
