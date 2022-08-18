@@ -9,13 +9,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 const Meet = () => {
     const socket = io('https://zoomclone-mahesh.herokuapp.com/')
     // const socket = io('http://localhost:5000')
-
     const { name } = useParams()
     const { room } = useParams()
 
     const [ids, setIds] = useState('')
     const [media, setMedia] = useState(null)
-    const [otherusername, setOtheruserName] = useState(null)
 
     const mydiv = useRef()
     const myvideo = useRef()
@@ -68,7 +66,7 @@ const Meet = () => {
     }, [])
 
     // answering the call
-    peer.on('call', (call,id) => {
+    peer.on('call', (call, id) => {
         socket.on('addname', (username, id) => { //get the otheruser name who are calling
             call.answer(myvideoStrm)
             const video = document.createElement('video')
@@ -83,7 +81,7 @@ const Meet = () => {
             callRef.current = call
             answerList.push({ call })
         })
-    
+
     })
 
     socket.on('user-connect', (id, size, username) => {
@@ -91,12 +89,12 @@ const Meet = () => {
         console.log("new user");
         const found = callList.some(el => el.id === id);
         // check the user is already in call or not 
-        if (!found) { 
+        if (!found) {
             call(id, username, myvideoStrm)
         }
         socket.emit('tellname', name, id)
     })
-    
+
     // on other user disconnect or leave the meeting remove him from meeting
     socket.on('user-disconnected', (id) => {
         console.log("disconnected");
@@ -114,7 +112,7 @@ const Meet = () => {
         }
     })
 
-   
+
     // making a call on other join the room
     const call = (id, username, myvideoStrm) => {
         const call = peer.call(id, myvideoStrm)
@@ -167,15 +165,15 @@ const Meet = () => {
             document.getElementById("audio").style.color = "black";
         }
     };
-     
+
 
     // ending a call
-    const leave = () => {
+    const leave = async () => {
         socket.emit('user-left', ids, room)
         media.getTracks().forEach(function (track) {
             track.stop();
         });
-        navigate('/')
+        window.location.replace('/')
     }
 
 
@@ -190,8 +188,8 @@ const Meet = () => {
     }
 
     return (
-        <div className='bg-slate-200'>
-            <div className='py-8 pb-9 flex container mx-auto flex-col h-screen '>
+        <div className='bg-slate-200 p-4 flex h-screen md:p-8'>
+            <div className='flex-1 flex container mx-auto flex-col '>
                 <div ref={alertbox} className="p-4 hidden absolute w-full left-0 top-0 mb-4 text-sm text-green-700 bg-green-100 rounded dark:bg-green-200 dark:text-green-800" role="alert">
                     <span className="font-medium">Success alert!</span> Room Code is copied
                 </div>
