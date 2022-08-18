@@ -188,7 +188,7 @@ const Meet = () => {
     }
 
     return (
-        <div className='bg-slate-200 p-4 flex h-screen md:p-8'>
+        <div className='bg-slate-200 p-8 flex h-screen md:p-8'>
             <div className='flex-1 flex container mx-auto flex-col '>
                 <div ref={alertbox} className="p-4 hidden absolute w-full left-0 top-0 mb-4 text-sm text-green-700 bg-green-100 rounded dark:bg-green-200 dark:text-green-800" role="alert">
                     <span className="font-medium">Success alert!</span> Room Code is copied
