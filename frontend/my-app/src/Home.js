@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
 const Home = () => {
 
-  const socket = io('https://zoomclone-mahesh.herokuapp.com/')
-  // const socket = io('http://localhost:5000')
+  // const socket = io('https://zoomclone-mahesh.herokuapp.com/')
+  const socket = io('http://localhost:5000')
 
   const [code, setCode] = useState()
   const [copys, setCopys] = useState(false)

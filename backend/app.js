@@ -72,20 +72,20 @@ io.on('connection', (socket) => {
 
 
 // <==========================Deployment====================================>
-const __dirname1 = path.resolve()
+// const __dirname1 = path.resolve()
 
-if (process.env.Node_env === 'production') {
+// if (process.env.Node_env === 'production') {
 
-  app.use(express.static(path.join(__dirname1, 'frontend/my-app/build')))
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname1, 'frontend', 'my-app', 'build', 'index.html'))
-  })
+//   app.use(express.static(path.join(__dirname1, 'frontend/my-app/build')))
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname1, 'frontend', 'my-app', 'build', 'index.html'))
+//   })
 
-} else {
-  app.get('/', (req, res) => {
-    res.send('welcome')
-  });
-}
+// } else {
+//   app.get('/', (req, res) => {
+//     res.send('welcome')
+//   });
+// }
 
 // </==========================Deployment===================================>
 
