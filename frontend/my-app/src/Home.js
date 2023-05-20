@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
 const Home = () => {
 
-  const socket = io('https://zoom-clone-lemon.vercel.app')
+  const socket = io('https://zoom-backend-b2ys.onrender.com/', {
+    transports: ["websocket"]
+  })
   // const socket = io('http://localhost:5000')
 
   const [code, setCode] = useState()

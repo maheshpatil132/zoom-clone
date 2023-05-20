@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 
 const Meet = () => {
-    const socket = io('https://zoom-clone-lemon.vercel.app/')
+    const socket = io('https://zoom-backend-b2ys.onrender.com/')
     // const socket = io('http://localhost:5000')
     const { name } = useParams()
     const { room } = useParams()
